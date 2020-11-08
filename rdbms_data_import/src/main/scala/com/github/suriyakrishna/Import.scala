@@ -8,7 +8,7 @@ import org.apache.spark.sql.{DataFrame, SparkSession}
 
 @SerialVersionUID(1L)
 object Import extends Logging with Serializable {
-  System.setProperty("hadoop.home.dir", "c:\\winutils")
+  //  System.setProperty("hadoop.home.dir", "c:\\winutils")
 
   // Application Name
   private val appName: String = this.getClass.getName.dropRight(1)
@@ -26,8 +26,8 @@ object Import extends Logging with Serializable {
     logInfo(s"User Input ${input.toString}")
 
     // Instantiating SparkSession
-    //    implicit val spark: SparkSession = SparkSession.builder().appName(s"SparkJDBCImport-${input.tableName}-${startTime}").getOrCreate()
-    implicit val spark: SparkSession = SparkSession.builder().appName(s"SparkJDBCImport-${input.tableName}-${startTime}").master("local").getOrCreate()
+    implicit val spark: SparkSession = SparkSession.builder().appName(s"SparkJDBCImport-${input.tableName}-${startTime}").getOrCreate()
+    //    implicit val spark: SparkSession = SparkSession.builder().appName(s"SparkJDBCImport-${input.tableName}-${startTime}").master("local").getOrCreate()
 
     logInfo(s"Spark Application ID - ${spark.sparkContext.applicationId}")
     logInfo(s"Spark Application Name - ${spark.sparkContext.appName}")
