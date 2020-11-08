@@ -27,7 +27,7 @@ object Import extends Logging with Serializable {
 
     // Instantiating SparkSession
     implicit val spark: SparkSession = SparkSession.builder().appName(s"SparkJDBCImport-${input.tableName}-${startTime}").getOrCreate()
-    //    implicit val spark: SparkSession = SparkSession.builder().appName(s"SparkJDBCImport-${input.tableName}-${startTime}").master("local").getOrCreate()
+    //implicit val spark: SparkSession = SparkSession.builder().appName(s"SparkJDBCImport-${input.tableName}-${startTime}").master("local").getOrCreate()
 
     logInfo(s"Spark Application ID - ${spark.sparkContext.applicationId}")
     logInfo(s"Spark Application Name - ${spark.sparkContext.appName}")
