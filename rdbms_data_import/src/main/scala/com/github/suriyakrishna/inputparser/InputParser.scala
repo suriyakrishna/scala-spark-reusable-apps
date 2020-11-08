@@ -6,13 +6,13 @@ import org.apache.commons.cli.{CommandLine, HelpFormatter, MissingArgumentExcept
 object InputParser {
 
   def getUserInput(command: CommandLine): Input = {
-    val driver: String = command.getOptionValue("driver")
-    val url: String = command.getOptionValue("url")
-    val userName: String = command.getOptionValue("username")
-    val password: String = command.getOptionValue("password")
-    val table: String = command.getOptionValue("table")
-    val splitBy: String = command.getOptionValue("split-by")
-    val targetDirectory: String = command.getOptionValue("target-dir")
+    val driver: String = command.getOptionValue("driver").trim
+    val url: String = command.getOptionValue("url").trim
+    val userName: String = command.getOptionValue("username").trim
+    val password: String = command.getOptionValue("password").trim
+    val table: String = command.getOptionValue("table").trim
+    val splitBy: String = command.getOptionValue("split-by").trim
+    val targetDirectory: String = command.getOptionValue("target-dir").trim
     var append: Boolean = false
     if (command.hasOption("append")) {
       append = true
@@ -26,11 +26,11 @@ object InputParser {
     }
     var numPartitions: String = "4"
     if (command.hasOption("num-partitions")) {
-      numPartitions = command.getOptionValue("num-partitions")
+      numPartitions = command.getOptionValue("num-partitions").trim
     }
     var format: String = "parquet"
     if (command.hasOption("format")) {
-      format = command.getOptionValue("format").toLowerCase
+      format = command.getOptionValue("format").trim.toLowerCase
       // Validation for Output File Format Type
       if (!(format == "json" || format == "parquet" || format == "csv")) {
         throw new RuntimeException(s"Output format cannot be ${format.toUpperCase}. It can be only JSON/PARQUET/CSV.")
@@ -38,7 +38,7 @@ object InputParser {
     }
     var columns: String = "all"
     if (command.hasOption("columns")) {
-      columns = command.getOptionValue("columns")
+      columns = command.getOptionValue("columns").trim
     }
     var incremental: Boolean = false
     if (command.hasOption("incremental")) {
@@ -59,7 +59,7 @@ object InputParser {
     }
     var incrementalType: String = null
     if (command.hasOption("incremental-type")) {
-      incrementalType = command.getOptionValue("incremental-type").toLowerCase
+      incrementalType = command.getOptionValue("incremental-type").trim.toLowerCase
       // Validation for Incremental Type
       if (!(incrementalType == "id" || incrementalType == "timestamp")) {
         throw new RuntimeException(s"Incremental import type cannot be ${incrementalType.toUpperCase}. It can be only ID/TIMESTAMP.")

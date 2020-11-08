@@ -48,7 +48,7 @@ object ReadUtils extends Logging with Serializable {
     return boundary
   }
 
-  def getBoundaryQueryJDBCOptions(implicit input: Input): Map[String, String] = Map(
+  def getBoundaryQueryJDBCOptions(input: Input): Map[String, String] = Map(
     "driver" -> input.driver,
     "url" -> input.url,
     "user" -> input.username,
