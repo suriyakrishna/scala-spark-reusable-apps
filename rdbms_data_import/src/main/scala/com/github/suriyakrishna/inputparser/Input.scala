@@ -15,7 +15,10 @@ case class Input(driver: String,
                  incremental: Boolean,
                  incrementalType: String,
                  incrementalColumn: String,
-                 incrementalColumnId: String) {
+                 incrementalColumnId: String,
+                 incrementalTimeFormat: String,
+                 incrementalStartTime: String,
+                 incrementalEndTime: String) {
   override def toString: String = {
     s"""
        |${Array.fill[String](15)("#").mkString} User Input ${Array.fill[String](15)("#").mkString}
@@ -33,6 +36,9 @@ case class Input(driver: String,
        |incrementalType: ${incrementalType}
        |incrementalColumn: ${incrementalColumn}
        |incrementalColumnId: ${incrementalColumnId}
+       |incrementalTimeFormat: ${incrementalTimeFormat}
+       |incrementalStartTime: ${incrementalStartTime}
+       |incrementalEndTime: ${incrementalEndTime}
        |${Array.fill[String](41)("#").mkString}""".stripMargin
   }
 }

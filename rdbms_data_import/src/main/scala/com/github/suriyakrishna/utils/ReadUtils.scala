@@ -2,7 +2,7 @@ package com.github.suriyakrishna.utils
 
 import com.github.suriyakrishna.inputparser.Input
 import org.apache.spark.internal.Logging
-import org.apache.spark.sql.functions.{col, lit, max, min}
+import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types.DataType
 import org.apache.spark.sql.{AnalysisException, Column, DataFrame, SparkSession}
 
@@ -110,4 +110,9 @@ object ReadUtils extends Logging with Serializable {
     return dataType
   }
 
+  def getTimestampIncrementalCondition(columnName: String, timestampFormat: String, startTime: String, endTime: String): Column = {
+    val condition = to_timestamp(col(columnName), timestampFormat) >= to_timestamp(lit(startTime), timestampFormat) and to_timestamp(col(columnName), timestampFormat) < to_timestamp(lit(endTime), timestampFormat)
+    logInfo(s"Condition: ${condition.toString()}")
+    return condition
+  }
 }

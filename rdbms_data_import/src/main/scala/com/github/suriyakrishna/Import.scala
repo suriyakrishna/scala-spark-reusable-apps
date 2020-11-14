@@ -8,7 +8,7 @@ import org.apache.spark.sql.{Column, DataFrame, SparkSession}
 
 @SerialVersionUID(1L)
 object Import extends Logging with Serializable {
-  System.setProperty("hadoop.home.dir", "c:\\winutils")
+  //  System.setProperty("hadoop.home.dir", "c:\\winutils")
 
   // Application Name
   private val appName: String = this.getClass.getName.dropRight(1)
@@ -26,8 +26,8 @@ object Import extends Logging with Serializable {
     logInfo(s"User Input ${input.toString}")
 
     // Instantiating SparkSession
-    //    implicit val spark: SparkSession = SparkSession.builder().appName(s"SparkJDBCImport-${input.tableName}-${startTime}").getOrCreate()
-    implicit val spark: SparkSession = SparkSession.builder().appName(s"SparkJDBCImport-${input.tableName}-${startTime}").master("local").getOrCreate()
+    implicit val spark: SparkSession = SparkSession.builder().appName(s"SparkJDBCImport-${input.tableName}-${startTime}").getOrCreate()
+    // mvimplicit val spark: SparkSession = SparkSession.builder().appName(s"SparkJDBCImport-${input.tableName}-${startTime}").master("local").getOrCreate()
 
     logInfo(s"Spark Application ID - ${spark.sparkContext.applicationId}")
     logInfo(s"Spark Application Name - ${spark.sparkContext.appName}")
@@ -38,8 +38,16 @@ object Import extends Logging with Serializable {
 
     //Incremental For BoundaryQuery DataFrame
     var incrementalFilterCondition: Column = null
-    if (input.incremental) {
+
+    // Incremental Filter Condition for column type ID
+    if (input.incremental && input.incrementalType == "id") {
       incrementalFilterCondition = ReadUtils.getIncrementalCondition(boundaryDF, input.incrementalColumn, input.incrementalColumnId)
+      boundaryDF = boundaryDF.filter(incrementalFilterCondition)
+    }
+
+    // Incremental Filter Condition for column type TIMESTAMP
+    if (input.incremental && input.incrementalType == "timestamp") {
+      incrementalFilterCondition = ReadUtils.getTimestampIncrementalCondition(input.incrementalColumn, input.incrementalTimeFormat, input.incrementalStartTime, input.incrementalEndTime)
       boundaryDF = boundaryDF.filter(incrementalFilterCondition)
     }
 
@@ -50,9 +58,10 @@ object Import extends Logging with Serializable {
     var df: DataFrame = ReadUtils.getDF(dfOptions, input.columns)
 
     //Incremental For Actual Import DataFrame
-    if (input.incremental && input.incrementalType == "id") {
+    if (input.incremental) {
       df = df.filter(incrementalFilterCondition)
     }
+
     logInfo(s"Number of Partitions: ${df.rdd.getNumPartitions}")
     logInfo("Writing data to output location")
 
