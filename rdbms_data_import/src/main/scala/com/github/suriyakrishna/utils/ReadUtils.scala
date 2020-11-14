@@ -30,7 +30,7 @@ object ReadUtils extends Logging with Serializable {
       logInfo(s"Executing Boundary Query on table: $tableName and column: $splitByColumn")
       boundary = df.select(
         min(col(splitByColumn)).cast("string").alias("lower"),
-        max(splitByColumn).cast("string").alias("upper"))
+        max(col(splitByColumn)).cast("string").alias("upper"))
         .rdd
         .map(a => BoundValues(a.getString(0), a.getString(1)))
         .first()
@@ -86,7 +86,7 @@ object ReadUtils extends Logging with Serializable {
   }
 
   def getIncrementalCondition(df: DataFrame, column: String, value: String): Column = {
-    logInfo("Generating Incremental Filter Condition")
+    logInfo("Generating Incremental Filter Condition - Incremental using ID Column")
     val dataType = getColumnType(df, column)
     val condition: Column = col(column).gt(lit(value).cast(dataType))
     logInfo(s"Condition: ${condition.toString()}")
@@ -111,6 +111,7 @@ object ReadUtils extends Logging with Serializable {
   }
 
   def getTimestampIncrementalCondition(columnName: String, timestampFormat: String, startTime: String, endTime: String): Column = {
+    logInfo("Generating Incremental Filter Condition - Incremental using TIMESTAMP Column")
     val condition = to_timestamp(col(columnName), timestampFormat) >= to_timestamp(lit(startTime), timestampFormat) and to_timestamp(col(columnName), timestampFormat) < to_timestamp(lit(endTime), timestampFormat)
     logInfo(s"Condition: ${condition.toString()}")
     return condition
