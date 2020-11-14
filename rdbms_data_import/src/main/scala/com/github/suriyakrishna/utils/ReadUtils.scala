@@ -2,27 +2,41 @@ package com.github.suriyakrishna.utils
 
 import com.github.suriyakrishna.inputparser.Input
 import org.apache.spark.internal.Logging
-import org.apache.spark.sql.functions.{col, max, min}
-import org.apache.spark.sql.{AnalysisException, DataFrame, SparkSession}
+import org.apache.spark.sql.functions._
+import org.apache.spark.sql.types.DataType
+import org.apache.spark.sql.{AnalysisException, Column, DataFrame, SparkSession}
 
 @SerialVersionUID(2L)
 object ReadUtils extends Logging with Serializable {
-  def getBoundary(options: Map[String, String], partitionColumn: String)(implicit spark: SparkSession): BoundValues = {
-    var boundary: BoundValues = null
+
+  def getBoundaryDF(options: Map[String, String])(implicit spark: SparkSession): DataFrame = {
+    var df: DataFrame = null
     try {
-      val tableName: String = options("dbtable")
-      val splitByColumn: String = partitionColumn
-      logInfo(s"Executing Boundary Query on table: $tableName and column: $splitByColumn")
-      boundary = spark.read.format("jdbc")
+      df = spark.read.format("jdbc")
         .options(options)
         .load()
-        .select(min(col(splitByColumn)).cast("string").alias("lower"), max(splitByColumn).cast("string").alias("upper"))
+    } catch {
+      case e: Exception => {
+        logError(s"Caught Exception While generating BoundaryQuery DataFrame: ${e.getMessage}", e.fillInStackTrace())
+      }
+    }
+    return df
+  }
+
+  def getBoundary(df: DataFrame, tableName: String, partitionColumn: String): BoundValues = {
+    var boundary: BoundValues = null
+    try {
+      val splitByColumn: String = partitionColumn
+      logInfo(s"Executing Boundary Query on table: $tableName and column: $splitByColumn")
+      boundary = df.select(
+        min(col(splitByColumn)).cast("string").alias("lower"),
+        max(col(splitByColumn)).cast("string").alias("upper"))
         .rdd
         .map(a => BoundValues(a.getString(0), a.getString(1)))
         .first()
       logInfo(s"Lower Boundary: ${boundary.lower}")
       logInfo(s"Upper Boundary: ${boundary.upper}")
-      if(boundary.lower == null || boundary.upper == null) {
+      if (boundary.lower == null || boundary.upper == null) {
         throw new RuntimeException("Boundary values are null. Check data in table and rerun.")
       }
     } catch {
@@ -34,7 +48,7 @@ object ReadUtils extends Logging with Serializable {
     return boundary
   }
 
-  def getBoundaryQueryJDBCOptions(implicit input: Input): Map[String, String] = Map(
+  def getBoundaryQueryJDBCOptions(input: Input): Map[String, String] = Map(
     "driver" -> input.driver,
     "url" -> input.url,
     "user" -> input.username,
@@ -62,7 +76,7 @@ object ReadUtils extends Logging with Serializable {
       try {
         return df.select(requiredColumns: _*)
       } catch {
-        case s: AnalysisException =>{
+        case s: AnalysisException => {
           logError(s"Caught Spark SQL Analysis Exception: ${s.getSimpleMessage}", s.fillInStackTrace())
           System.exit(1)
         }
@@ -71,4 +85,35 @@ object ReadUtils extends Logging with Serializable {
     return df
   }
 
+  def getIncrementalCondition(df: DataFrame, column: String, value: String): Column = {
+    logInfo("Generating Incremental Filter Condition - Incremental using ID Column")
+    val dataType = getColumnType(df, column)
+    val condition: Column = col(column).gt(lit(value).cast(dataType))
+    logInfo(s"Condition: ${condition.toString()}")
+    return condition
+  }
+
+  private def getColumnType(df: DataFrame, column: String): DataType = {
+    var dataType: DataType = null
+    try {
+      dataType = df.select(col(column))
+        .schema
+        .head
+        .dataType
+      logInfo(s"Incremental column SQL DataType: ${dataType.sql}")
+    } catch {
+      case s: AnalysisException => {
+        logError(s"Caught Spark SQL Analysis Exception: ${s.getSimpleMessage}", s.fillInStackTrace())
+        System.exit(1)
+      }
+    }
+    return dataType
+  }
+
+  def getTimestampIncrementalCondition(columnName: String, timestampFormat: String, startTime: String, endTime: String): Column = {
+    logInfo("Generating Incremental Filter Condition - Incremental using TIMESTAMP Column")
+    val condition = to_timestamp(col(columnName), timestampFormat) >= to_timestamp(lit(startTime), timestampFormat) and to_timestamp(col(columnName), timestampFormat) < to_timestamp(lit(endTime), timestampFormat)
+    logInfo(s"Condition: ${condition.toString()}")
+    return condition
+  }
 }

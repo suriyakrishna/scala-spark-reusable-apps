@@ -11,22 +11,35 @@ case class Input(driver: String,
                  overwrite: Boolean,
                  numPartitions: String,
                  format: String,
-                 columns: String) {
+                 columns: String,
+                 incremental: Boolean,
+                 incrementalType: String,
+                 incrementalColumn: String,
+                 incrementalColumnId: String,
+                 incrementalTimeFormat: String,
+                 incrementalStartTime: String,
+                 incrementalEndTime: String) {
   override def toString: String = {
     s"""
-      ${Array.fill[String](10)("#").mkString} User Input ${Array.fill[String](10)("#").mkString}
-      driver: ${driver}
-      url: ${url}
-      tableName: ${tableName}
-      splitByColumn: ${splitByColumn}
-      targetDirectory: ${targetDirectory}
-      append: ${append}
-      overwrite: ${overwrite}
-      numPartitions: ${numPartitions}
-      format: ${format}
-      columns: ${columns}
-      ${Array.fill[String](31)("#").mkString}
-    """
+       |${Array.fill[String](15)("#").mkString} User Input ${Array.fill[String](15)("#").mkString}
+       |driver: ${driver}
+       |url: ${url}
+       |tableName: ${tableName}
+       |splitByColumn: ${splitByColumn}
+       |targetDirectory: ${targetDirectory}
+       |append: ${append}
+       |overwrite: ${overwrite}
+       |numPartitions: ${numPartitions}
+       |format: ${format}
+       |columns: ${columns}
+       |incremental: ${incremental}
+       |incrementalType: ${incrementalType}
+       |incrementalColumn: ${incrementalColumn}
+       |incrementalColumnId: ${incrementalColumnId}
+       |incrementalTimeFormat: ${incrementalTimeFormat}
+       |incrementalStartTime: ${incrementalStartTime}
+       |incrementalEndTime: ${incrementalEndTime}
+       |${Array.fill[String](41)("#").mkString}""".stripMargin
   }
 }
 

@@ -4,7 +4,7 @@ import com.github.suriyakrishna.inputparser.{Input, InputParser}
 import com.github.suriyakrishna.utils.{BoundValues, ReadUtils, Time, WriteUtils}
 import org.apache.commons.cli.CommandLine
 import org.apache.spark.internal.Logging
-import org.apache.spark.sql.{DataFrame, SparkSession}
+import org.apache.spark.sql.{Column, DataFrame, SparkSession}
 
 @SerialVersionUID(1L)
 object Import extends Logging with Serializable {
@@ -27,18 +27,40 @@ object Import extends Logging with Serializable {
 
     // Instantiating SparkSession
     implicit val spark: SparkSession = SparkSession.builder().appName(s"SparkJDBCImport-${input.tableName}-${startTime}").getOrCreate()
-    //implicit val spark: SparkSession = SparkSession.builder().appName(s"SparkJDBCImport-${input.tableName}-${startTime}").master("local").getOrCreate()
+    // mvimplicit val spark: SparkSession = SparkSession.builder().appName(s"SparkJDBCImport-${input.tableName}-${startTime}").master("local").getOrCreate()
 
     logInfo(s"Spark Application ID - ${spark.sparkContext.applicationId}")
     logInfo(s"Spark Application Name - ${spark.sparkContext.appName}")
 
     // Get Boundary Values for Parallel Import
     val boundaryQueryOptions: Map[String, String] = ReadUtils.getBoundaryQueryJDBCOptions(input)
-    val bound: BoundValues = ReadUtils.getBoundary(boundaryQueryOptions, input.splitByColumn)
+    var boundaryDF: DataFrame = ReadUtils.getBoundaryDF(boundaryQueryOptions)
+
+    //Incremental For BoundaryQuery DataFrame
+    var incrementalFilterCondition: Column = null
+
+    // Incremental Filter Condition for column type ID
+    if (input.incremental && input.incrementalType == "id") {
+      incrementalFilterCondition = ReadUtils.getIncrementalCondition(boundaryDF, input.incrementalColumn, input.incrementalColumnId)
+      boundaryDF = boundaryDF.filter(incrementalFilterCondition)
+    }
+
+    // Incremental Filter Condition for column type TIMESTAMP
+    if (input.incremental && input.incrementalType == "timestamp") {
+      incrementalFilterCondition = ReadUtils.getTimestampIncrementalCondition(input.incrementalColumn, input.incrementalTimeFormat, input.incrementalStartTime, input.incrementalEndTime)
+      boundaryDF = boundaryDF.filter(incrementalFilterCondition)
+    }
+
+    val bound: BoundValues = ReadUtils.getBoundary(boundaryDF, input.tableName, input.splitByColumn)
 
     // Create DataFrame For JDBC Table
     val dfOptions: Map[String, String] = ReadUtils.getSparkReadJBDCOptions(input, bound)
-    val df: DataFrame = ReadUtils.getDF(dfOptions, input.columns)
+    var df: DataFrame = ReadUtils.getDF(dfOptions, input.columns)
+
+    //Incremental For Actual Import DataFrame
+    if (input.incremental) {
+      df = df.filter(incrementalFilterCondition)
+    }
 
     logInfo(s"Number of Partitions: ${df.rdd.getNumPartitions}")
     logInfo("Writing data to output location")
