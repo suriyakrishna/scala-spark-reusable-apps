@@ -70,11 +70,11 @@ object InputParser {
       }
       // Validation for incremental type ID
       if (incrementalType == "id" && !command.hasOption("incremental-id")) {
-        throw new RuntimeException(s"--incremental-id option should be specified for option --incremental-type=ID")
+        throw new RuntimeException(s"--incremental-id option should be specified for option --incremental-type 'ID'")
       }
       // Validation for incremental type TIMESTAMP
       if (incrementalType == "timestamp" && (!command.hasOption("incremental-time-format") || !command.hasOption("incremental-start-time") || !command.hasOption("incremental-end-time"))) {
-        throw new RuntimeException(s"--incremental-time-format, --incremental-start-time and --incremental-end-time options should be specified for option --incremental-type=TIMESTAMP")
+        throw new RuntimeException(s"--incremental-time-format, --incremental-start-time and --incremental-end-time options should be specified for option --incremental-type 'TIMESTAMP'")
       }
     }
     var incrementalColumn: String = null
