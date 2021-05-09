@@ -6,10 +6,12 @@ import org.apache.spark.sql.{DataFrame, SaveMode}
 @SerialVersionUID(4L)
 object WriteUtils extends Serializable with Logging {
   // Write Data To MongoDB
-  def writeToMongo(dataFrame: DataFrame, writeMode: String, options: Map[String, String]): Unit = {
+  def writeToMongo(dataFrame: DataFrame, writeMode: String, numPartitions: Int, options: Map[String, String]): Unit = {
     val dataFrameWriter: SaveMode => Unit = saveMode => {
       try {
-        dataFrame.write
+        dataFrame
+          .repartition(numPartitions)
+          .write
           .mode(saveMode)
           .format("mongo")
           .options(options)

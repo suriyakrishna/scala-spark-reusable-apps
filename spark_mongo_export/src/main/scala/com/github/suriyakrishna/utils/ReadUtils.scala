@@ -26,7 +26,7 @@ object ReadUtils extends Serializable with Logging {
   }
 
   // Create DataFrame
-  def createSourceDF(dataLocation: String, format: String, readOptions: Map[String, String] = Map(), schema: StructType = null)(implicit spark: SparkSession): DataFrame = {
+  def createSourceDF(dataLocation: String, format: String, readOptions: Map[String, String], schema: StructType)(implicit spark: SparkSession): DataFrame = {
     // Validate dataLocation
     if (dataLocation.isEmpty || dataLocation == null) {
       throw new RuntimeException("Data Location can't be null or empty string")
@@ -42,7 +42,7 @@ object ReadUtils extends Serializable with Logging {
 
     // Apply Options If Provided and Return Function to Accept File Format
     var reader: String => DataFrame = fileFormat => {
-      if (readOptions.isEmpty) {
+      if (readOptions == null) {
         readerWithSchema.format(fileFormat).load(dataLocation)
       } else {
         readerWithSchema.options(readOptions).format(fileFormat).load(dataLocation)
