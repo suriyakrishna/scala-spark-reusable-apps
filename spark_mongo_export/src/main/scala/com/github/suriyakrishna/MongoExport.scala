@@ -10,7 +10,8 @@ object MongoExport extends Serializable with Logging {
   System.setProperty("hadoop.home.dir", "c:\\winutils")
 
   def main(args: Array[String]): Unit = {
-    // clean up the input before using in further steps
+    // Todo :-
+    //  clean up the input before using in further steps
     val mongoUri = "mongodb://localhost:27017".trim
     val dbName = "test".trim
     val collectionName = "spark_test".trim
@@ -27,16 +28,17 @@ object MongoExport extends Serializable with Logging {
         |source_view
       """.stripMargin
 
-
-    // Need to handle for dynamic options
+    // Todo :-
+    //  Need to handle for dynamic options
     val readOptions: Map[String, String] = Map(
       "header" -> "false",
       "inferSchema" -> "true",
       "sep" -> "~"
     )
 
-    // NEVER ADD URI TO THE WRITE OR READ OPTIONS
-    // NEED TO HANDLE FOR DYNAMIC OPTIONS
+    // Todo :-
+    //  NEVER ADD URI TO THE WRITE OR READ OPTIONS
+    //  NEED TO HANDLE FOR DYNAMIC OPTIONS
     val mongoWriteOptions: Map[String, String] = Map(
       "database" -> dbName,
       "collection" -> collectionName,
@@ -70,13 +72,15 @@ object MongoExport extends Serializable with Logging {
       .config("spark.mongodb.output.uri", mongoUri)
       .getOrCreate()
 
-    logInfo(s"Spark ApplicationID ===> ${spark.sparkContext.applicationId}")
+    logInfo(s"Spark ApplicationID : ${spark.sparkContext.applicationId}")
 
     val schema = ReadUtils.JSONSchemaToStructSchema(schemaPath)
 
     logInfo(logDecorator('-'))
     logInfo("Creating Source DataFrame")
-    // Need to handle conditions
+
+    // Todo :-
+    //  Need to handle conditions
     val df = ReadUtils.createSourceDF(dataLocation = dataLocation, format = fileFormat, readOptions = readOptions, schema = schema)
 
     logInfo(s"Source DataFrame Schema\n${df.schema.treeString}")
@@ -88,7 +92,8 @@ object MongoExport extends Serializable with Logging {
     logInfo(s"Transformed DataFrame Schema\n${transformedDF.schema.treeString}")
     logInfo(logDecorator('-'))
 
-    // Need to handle conditions
+    // Todo :-
+    //  Need to handle conditions
     WriteUtils.writeToMongo(dataFrame = transformedDF, writeMode = writeMode, options = mongoWriteOptions)
 
     val endTime = TimeUtils.getCurrentEpochTime
