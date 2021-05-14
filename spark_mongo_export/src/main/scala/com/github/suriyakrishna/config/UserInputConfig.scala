@@ -114,8 +114,8 @@ class UserInputConfig private(args: Array[String], className: String) {
     val writeMode: Option = new Option("wMode", "writeMode", true, "Either overwrite or append. Default append i.e. Upsert based on _id if shardKey option is not provided")
     val schemaPath: Option = new Option("sPath", "schemaPath", true, "Input Data File Schema Path. Schema will be inferred from file by default.")
     val transformationSQL: Option = new Option("tSQL", "transformationSQL", true, "SQL to transform the source data before writing to MongoDB. Use view name as 'source_view'")
-    val readOptions: Option = new Option("rOptions", "readOptions", true, "Spark DF Read Options, case sensitive!. Eg: inferSchema:true'sep:~'header:false")
-    val writeOptions: Option = new Option("wOptions", "writeOptions", true, "Spark Mongo DF Write Options, case sensitive!. Eg: replaceDocument:true'forceInsert:false")
+    val readOptions: Option = new Option("rOptions", "readOptions", true, "Spark DF Read Options, case sensitive!. Eg: inferSchema=true'sep=~'header=false")
+    val writeOptions: Option = new Option("wOptions", "writeOptions", true, "Spark Mongo DF Write Options, case sensitive!. Eg: replaceDocument=true'forceInsert=false")
     val numPartitions: Option = new Option("nPartitions", "numPartitions", true, "Parallelism to write to MongoDB. Default 10")
 
     val options: Options = new Options()
