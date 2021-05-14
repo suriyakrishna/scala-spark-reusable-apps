@@ -31,7 +31,7 @@ object TimeUtils extends Serializable {
   }
 
   def getTimeDiff(start: Long, end: Long): String = {
-    if (start > end) throw new Exception("Start time is greater than end time. Start time should be less than end time")
+    if (start > end) throw new RuntimeException("Start time is greater than end time. Start time should be less than end time")
     val diff: Long = end - start
     val diffSeconds = diff / 1000 % 60
     val diffMinutes = diff / (60 * 1000) % 60
