@@ -2,10 +2,33 @@
 
 *Reusable Spark Scala application to export files from `HDFS`/`S3` into Mongo Collection.*
 
+#### Table of Contents
+1. [*Application Flow*](#Application%20Flow)
+1. [*Project Build and Setup*](#Project%20Build%20and%20Setup)
+1. [*Application Options*](#Application%20Options)
+1. [*Log4j Properties File*](#Log4j%20Properties%20File)
+1. [*Spark Struct JSON Schema - Sample*](#Spark%20Struct%20JSON%20Schema%20-%20Sample)
+1. [*Application Invocation*](#Application%20Invocation)
+1. [*Application Invocation - With Read and Write Options*](#Application%20Invocation%20-%20With%20Read%20and%20Write%20Options)
+1. [*shardKey Option to Perform Upsert Based on Custom ID Columns*](#shardKey%20Option%20to%20Perform%20Upsert%20Based%20on%20Custom%20ID%20Columns)
+1. [*Additional Spark Configurations for AWS S3 Bucket Data*](#Additional%20Spark%20Configurations%20for%20AWS%20S3%20Bucket%20Data)
+1. [*Sample Application Log File*](#Sample%20Application%20Log%20File)
+
+
 #### ***Application Flow***
-![Application Flow](assets/images/application-flow.png)
+![*Application Flow*](assets/images/application-flow.png)
 <br>
 
+#### ***Project Build and Setup***
+> ***Clone the Repository***
+> ```bash
+> git clone git@github.com:suriyakrishna/scala-spark-reusable-apps.git
+> ```
+> ***Maven Build***
+> ```bash
+> cd scala-spark-reusable-apps
+> mvn clean package -f ./spark_mongo_export/pom.xml
+> ```
 #### ***Application Options***
 
 |Short Option|Long Option|Description|Has Argument|Is Required|
@@ -204,4 +227,59 @@ export AWS_ACCESS_SECRET_KEY="MY_SECRET_KEY"
 --conf spark.hadoop.fs.s3a.endpoint=${AWS_ENDPOINT} 
 --conf spark.hadoop.fs.s3a.access.key=${AWS_ACCESS_KEY_ID} 
 --conf spark.hadoop.fs.s3a.secret.key=${AWS_ACCESS_SECRET_KEY} 
+```
+
+#### ***Sample Application Log File***
+```log
+05-14-2021 19:48:09.883     MongoExport - INFO - ############################################################
+05-14-2021 19:48:09.885     MongoExport - INFO - SPARK MONGO EXPORT - Spark-Mongo-Export-test-spark_test-2021-05-14_19-48-09
+05-14-2021 19:48:09.885     MongoExport - INFO - ------------------------------------------------------------
+05-14-2021 19:48:09.896     MongoExport - INFO - 
+#################### User Input ####################
+dbName            : test
+collectionName    : spark_test
+dataLocation      : file:\\\\\\C:\\Users\\Kishan\\IdeaProjects\\ReusableScalaSparkApplications\\spark_mongo_export\\src\\test\\resources\\student_test.csv
+fileFormat        : csv
+writeMode         : overwrite
+schemaPath        : C:\\Users\\Kishan\\IdeaProjects\\ReusableScalaSparkApplications\\spark_mongo_export\\src\\test\\resources\\student-test-schema.json
+transformationSQL : SELECT student_id as _id, name, age, school, update_dt, current_timestamp() AS record_insert_tms FROM source_view
+readOptions       : Map(inferSchema -> true, sep -> ,, header -> true)
+writeOptions      : Map(database -> test, collection -> spark_test, replaceDocument -> false, forceInsert -> false)
+numPartitions     : 1
+####################################################
+    
+05-14-2021 19:48:09.897     MongoExport - INFO - ------------------------------------------------------------
+05-14-2021 19:48:18.342     MongoExport - INFO - Spark ApplicationID : local-1621001897739
+05-14-2021 19:48:18.580     MongoExport - INFO - ------------------------------------------------------------
+05-14-2021 19:48:18.581     MongoExport - INFO - Creating Source DataFrame
+05-14-2021 19:48:21.605     MongoExport - INFO - Source DataFrame Schema
+root
+ |-- student_id: integer (nullable = true)
+ |-- name: string (nullable = true)
+ |-- age: integer (nullable = true)
+ |-- school: string (nullable = true)
+ |-- update_dt: string (nullable = true)
+
+05-14-2021 19:48:21.606     MongoExport - INFO - ------------------------------------------------------------
+05-14-2021 19:48:21.607     MongoExport - INFO - Applying transformation on Source DataFrame
+05-14-2021 19:48:22.185  TransformUtils - INFO - View with name 'source_view' created to use in transformation
+05-14-2021 19:48:22.186  TransformUtils - INFO - Transformation Query
+SELECT student_id as _id, name, age, school, update_dt, current_timestamp() AS record_insert_tms FROM source_view
+05-14-2021 19:48:22.490     MongoExport - INFO - Transformed DataFrame Schema
+root
+ |-- _id: integer (nullable = true)
+ |-- name: string (nullable = true)
+ |-- age: integer (nullable = true)
+ |-- school: string (nullable = true)
+ |-- update_dt: string (nullable = true)
+ |-- record_insert_tms: timestamp (nullable = false)
+
+05-14-2021 19:48:22.491     MongoExport - INFO - ------------------------------------------------------------
+05-14-2021 19:48:22.492     MongoExport - INFO - Writing data to MongoDB
+05-14-2021 19:48:26.149     MongoExport - INFO - Write Completed
+05-14-2021 19:48:26.150     MongoExport - INFO - ------------------------------------------------------------
+05-14-2021 19:48:26.151     MongoExport - INFO - SPARK MONGO EXPORT - SUCCESSFUL
+05-14-2021 19:48:26.152     MongoExport - INFO - ------------------------------------------------------------
+05-14-2021 19:48:26.153     MongoExport - INFO - TIME TOOK - 0days 0hours 0minutes 16seconds
+05-14-2021 19:48:26.154     MongoExport - INFO - ############################################################
 ```
