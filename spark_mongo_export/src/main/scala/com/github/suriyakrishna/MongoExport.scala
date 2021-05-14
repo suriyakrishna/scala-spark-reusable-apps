@@ -2,8 +2,7 @@ package com.github.suriyakrishna
 
 import com.github.suriyakrishna.config.UserInputConfig
 import com.github.suriyakrishna.models.UserInput
-import com.github.suriyakrishna.utils.com.github.suriyakrishna.utils.TimeUtils
-import com.github.suriyakrishna.utils.{ReadUtils, TransformUtils, WriteUtils}
+import com.github.suriyakrishna.utils.{ReadUtils, TimeUtils, TransformUtils, WriteUtils}
 import org.apache.spark.internal.Logging
 import org.apache.spark.sql.types.StructType
 import org.apache.spark.sql.{DataFrame, SparkSession}
@@ -27,7 +26,7 @@ object MongoExport extends Serializable with Logging {
     val userInput: UserInput = UserInputConfig(args, appClassName)
 
     val startTime = TimeUtils.getCurrentEpochTime
-    val appName = s"Spark-Mongo-Export-${userInput.dbName}-${userInput.collectionName}-${TimeUtils.fromEpoch(startTime, "yyyy-MM-dd_HH-mm-ss.SSS")}"
+    val appName = s"Spark-Mongo-Export-${userInput.dbName}-${userInput.collectionName}-${TimeUtils.fromEpoch(startTime, "yyyy-MM-dd_HH-mm-ss")}"
 
     logInfo(logDecorator('#'))
     logInfo(s"SPARK MONGO EXPORT - ${appName}")

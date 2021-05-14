@@ -1,7 +1,5 @@
 package com.github.suriyakrishna.utils
 
-package com.github.suriyakrishna.utils
-
 import java.text.SimpleDateFormat
 import java.util.Date
 
