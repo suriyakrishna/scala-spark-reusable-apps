@@ -22,7 +22,21 @@
 |-wOptions|--writeOptions|Spark Mongo DF Write Options, case sensitive!. Eg: replaceDocument=true'forceInsert=false|Yes||
 |-nPartitions|--numPartitions|Parallelism to write to MongoDB. Default 10|Yes||
 
-<br>
+#### ***Log4j Properties File***
+```properties
+log4j.rootLogger=ERROR, Y
+log4j.appender.Y=org.apache.log4j.ConsoleAppender
+# log4j.appender.Y.target=System.err
+log4j.appender.Y.layout=org.apache.log4j.PatternLayout
+log4j.appender.Y.layout.conversionPattern=%d{MM-dd-yyyy HH:mm:ss.SSS} %c{1} -%5p - %m%n
+
+# Application Logger Configurations
+log4j.logger.com.github.suriyakrishna=INFO, app
+log4j.appender.app=org.apache.log4j.ConsoleAppender
+log4j.appender.app.layout=org.apache.log4j.PatternLayout
+log4j.appender.app.layout.conversionPattern=%d{MM-dd-yyyy HH:mm:ss.SSS} %15c{1} -%5p - %m%n
+log4j.additivity.com.github.suriyakrishna=false
+```
 
 #### ***Spark Struct JSON Schema - Sample***
 ```json
@@ -62,8 +76,6 @@
     ]
 }
 ```
-
-<br>
 
 #### ***Application Invocation***
 ```bash
