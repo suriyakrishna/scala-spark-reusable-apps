@@ -3,16 +3,16 @@
 *Reusable Spark Scala application to export files from `HDFS`/`S3` into Mongo Collection.*
 
 ### Table of Contents
-1. [*Application Flow*](####Application%20Flow)
-1. [*Project Build and Setup*](#Project%20Build%20and%20Setup)
-1. [*Application Options*](#Application%20Options)
-1. [*Log4j Properties File*](#Log4j%20Properties%20File)
-1. [*Spark Struct JSON Schema - Sample*](#Spark%20Struct%20JSON%20Schema%20-%20Sample)
-1. [*Application Invocation*](#Application%20Invocation)
-1. [*Application Invocation - With Read and Write Options*](#Application%20Invocation%20-%20With%20Read%20and%20Write%20Options)
-1. [*shardKey Option to Perform Upsert Based on Custom ID Columns*](#shardKey%20Option%20to%20Perform%20Upsert%20Based%20on%20Custom%20ID%20Columns)
-1. [*Additional Spark Configurations for AWS S3 Bucket Data*](#Additional%20Spark%20Configurations%20for%20AWS%20S3%20Bucket%20Data)
-1. [*Sample Application Log File*](#Sample%20Application%20Log%20File)
+1. [*Application Flow*](#application-flow)
+1. [*Project Build and Setup*](#project-build-and-setup)
+1. [*Application Options*](#application-options)
+1. [*Log4j Properties File*](#log4j-properties-file)
+1. [*Spark Struct JSON Schema - Sample*](#spark-struct-json-schema---sample)
+1. [*Application Invocation*](#application-invocation)
+1. [*Application Invocation - With Read and Write Options*](#application-invocation---with-read-and-write-options)
+1. [*shardKey Option to Perform Upsert Based on Custom ID Columns*](#shardkey-option-to-perform-upsert-based-on-custom-id-columns)
+1. [*Additional Spark Configurations for AWS S3 Bucket Data*](#additional-spark-configurations-for-aws-s3-bucket-data)
+1. [*Sample Application Log File*](#sample-application-log-file)
 
 
 #### ***Application Flow***
