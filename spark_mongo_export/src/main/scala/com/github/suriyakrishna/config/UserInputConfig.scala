@@ -142,7 +142,7 @@ class UserInputConfig private(args: Array[String], className: String) {
   private def optionsStringToMap(options: String): Map[String, String] = {
     options.split("'")
       .map(option => {
-        val t = option.split(":")
+        val t = option.split("=")
         (t.head.trim, t.last.trim)
       }).toMap
   }

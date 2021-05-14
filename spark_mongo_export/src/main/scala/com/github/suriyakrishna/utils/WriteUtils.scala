@@ -13,7 +13,7 @@ object WriteUtils extends Serializable with Logging {
           .repartition(numPartitions)
           .write
           .mode(saveMode)
-          .format("mongo")
+          .format("com.mongodb.spark.sql") // For Spark Version < 2.3.3 'mongo' is not available by default source. We need to use the full package path
           .options(options)
           .save()
       } catch {
