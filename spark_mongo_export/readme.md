@@ -2,7 +2,7 @@
 
 *Reusable Spark Scala application to export files from `HDFS`/`S3` into Mongo Collection.*
 
-### Table of Contents
+### ***Table of Contents***
 1. [*Application Flow*](#application-flow)
 1. [*Project Build and Setup*](#project-build-and-setup)
 1. [*Application Options*](#application-options)
