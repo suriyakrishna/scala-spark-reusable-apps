@@ -12,7 +12,7 @@ object MongoExport extends Serializable with Logging {
 
   // Todo :-
   //  Remove this property - Kept for testing the application in IntelliJ
-  System.setProperty("hadoop.home.dir", "c:\\winutils")
+  // System.setProperty("hadoop.home.dir", "c:\\winutils")
 
   private val appClassName: String = this.getClass.getName.dropRight(1)
 
@@ -38,7 +38,7 @@ object MongoExport extends Serializable with Logging {
     //  Remove master from SparkSession Builder
     // Create Spark Session with Mongo DataSource
     implicit val spark: SparkSession = SparkSession.builder()
-      .master("local")
+      //      .master("local")
       .appName(appName)
       .config("spark.mongodb.output.uri", userInput.mongoURI)
       .getOrCreate()
@@ -80,7 +80,7 @@ object MongoExport extends Serializable with Logging {
 
     // Todo :-
     //  Remove sleep - Kept for debugging in spark application console
-    Thread.sleep(100000000L)
+    // Thread.sleep(100000000L)
 
   }
 
