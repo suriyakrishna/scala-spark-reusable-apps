@@ -85,7 +85,7 @@ class UserInputConfigTests extends ApplicationTests {
 
   }
 
-  test("UserInputConfig Should throw Runtime when wMode is neither overwrite or append") {
+  test("UserInputConfig Should throw Runtime Exception when wMode is neither overwrite or append") {
     val userArgs: Array[String] = Array(
       "-uri", MONGO_URI,
       "-db", DB_NAME,
