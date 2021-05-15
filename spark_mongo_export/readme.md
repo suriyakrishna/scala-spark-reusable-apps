@@ -4,7 +4,7 @@
 
 ### ***Table of Contents***
 1. [*Application Flow*](#application-flow)
-1. [*How This Application Works ?*](#how-this-application-works-?)
+1. [*How This Application Works ?*](#how-this-application-works-)
 1. [*Read Configuration*](#read-configuration)
 1. [*Write Configuration*](#write-configuration)
 1. [*Project Build and Setup*](#project-build-and-setup)
@@ -35,17 +35,12 @@ When user invokes the application using `spark-submit`
 - By default, application will infer the schema from source file and creates a `DataFrame`. 
 - If user don't want to inferSchema from the file they can also create a Spark Struct Schema JSON and pass it as a file using `--schemaPath` option.
 - If user wants additional configuration they can use `--readOptions` to provide additional configuration.
-- Each option in `--readOptions` is single quote (`'`) separated `key=value` pair and keys are case sensitive.
-<br> 
-e.g: "sep=~'header=false'inferSchema=false"
+- Each option in `--readOptions` is single quote (`'`) separated `key=value` pair and keys are case sensitive. ***e.g:*** `--readOptions "sep=~'header=false'inferSchema=false"`
 
 #### ***Write Configuration***
 - By default, application will use `append` mode to export data into Mongo. It can be override by using `--writeMode` option.
 - If user want additional write configuration then they can use `--writeOptions`.
-- Each option in `--writeOptions` is single quote (`'`) separated `key=value` pair and keys are case sensitive.
-<br> 
-e.g: "forceInsert=false'replaceDocument=false'shardKey={\\"student_id\\":1,\\"
-school\\":1}"
+- Each option in `--writeOptions` is single quote (`'`) separated `key=value` pair and keys are case sensitive. ***e.g:*** `--writeOptions "forceInsert=false'replaceDocument=false'shardKey={\"student_id\":1,\"school\":1}"`
 
 #### ***Project Build and Setup***
 > ***Clone the Repository***
