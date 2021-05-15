@@ -28,7 +28,7 @@ When user invokes the application using `spark-submit`
 1. First, the application will parse and validate the input options.
 1. Instantiate new `SparkSession` with mongo config `spark.mongodb.output.uri`.
 1. Depending on the input options provided by the user `DataFrame` will be created for source data file.
-1. If user provided a transformation `SQL` a temporary view will be created on source `DataFrame` and transformation will be applied to form transformed `DataFrame` or the source DataFrame will used for writing the data to Mongo Collection.
+1. If user provided a transformation `SQL` a temporary view will be created on source `DataFrame` and transformation will be applied to form transformed `DataFrame` or the source `DataFrame` will used for writing the data to Mongo Collection.
 1. Finally, either transformed `DataFrame` or Source `DataFrame` will be written into Mongo Collection depending on the write configuration provided by user or default write configuration.
 
 #### ***Read Configuration***
