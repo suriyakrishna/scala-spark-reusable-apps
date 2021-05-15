@@ -4,6 +4,9 @@
 
 ### ***Table of Contents***
 1. [*Application Flow*](#application-flow)
+1. [*How This Application Works ?*](#how-this-application-works-?)
+1. [*Read Configuration*](#read-configuration)
+1. [*Write Configuration*](#write-configuration)
 1. [*Project Build and Setup*](#project-build-and-setup)
 1. [*Application Options*](#application-options)
 1. [*Log4j Properties File*](#log4j-properties-file)
@@ -18,6 +21,31 @@
 #### ***Application Flow***
 ![*Application Flow*](assets/images/application-flow.png)
 <br>
+
+#### ***How This Application Works ?***
+When user invokes the application using `spark-submit` 
+
+1. First, the application will parse and validate the input options.
+1. Instantiate new `SparkSession` with mongo config `spark.mongodb.output.uri`.
+1. Depending on the input options provided by the user `DataFrame` will be created for source data file.
+1. If user provided a transformation `SQL` a temporary view will be created on source `DataFrame` and transformation will be applied to form transformed `DataFrame` or the source DataFrame will used for writing the data to Mongo Collection.
+1. Finally, either transformed `DataFrame` or Source `DataFrame` will be written into Mongo Collection depending on the write configuration provided by user or default write configuration.
+
+#### ***Read Configuration***
+- By default, application will infer the schema from source file and creates a `DataFrame`. 
+- If user don't want to inferSchema from the file they can also create a Spark Struct Schema JSON and pass it as a file using `--schemaPath` option.
+- If user wants additional configuration they can use `--readOptions` to provide additional configuration.
+- Each option in `--readOptions` is single quote (`'`) separated `key=value` pair and keys are case sensitive.
+<br> 
+e.g: "sep=~'header=false'inferSchema=false"
+
+#### ***Write Configuration***
+- By default, application will use `append` mode to export data into Mongo. It can be override by using `--writeMode` option.
+- If user want additional write configuration then they can use `--writeOptions`.
+- Each option in `--writeOptions` is single quote (`'`) separated `key=value` pair and keys are case sensitive.
+<br> 
+e.g: "forceInsert=false'replaceDocument=false'shardKey={\\"student_id\\":1,\\"
+school\\":1}"
 
 #### ***Project Build and Setup***
 > ***Clone the Repository***
